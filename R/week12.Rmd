@@ -40,6 +40,7 @@ week12_tbl <- tibble( # create the tibble with upvotes & title
   upvotes = thread_details$threads$upvotes
 )
 write_csv(week12_tbl, file = "../data/week12tbl.csv")
+week12_tbl <- read_csv(file = "../data/week12data.csv")
 ```
 
 ```{r}
