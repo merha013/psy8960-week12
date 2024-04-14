@@ -1,0 +1,48 @@
+---
+title: "week12"
+author: "Merhar"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Script Settings and Resources
+library(tidyverse)
+library(RedditExtractoR)
+library(jsonlite)
+library(tm)
+library(qdap)
+library(textstem)
+library(RWeka)
+library(wordcloud)
+library(tidytext)
+library(ldatuning)
+library(topicmodels)
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+## 
+
+```{r}
+# Data Import and Cleaning
+data <- find_thread_urls( 
+  subreddit = "IOPsychology", 
+  sort_by = "new",
+  period = "year") # pulling 1 years worth of data
+write_csv(data, file = "../data/week12data.csv")
+urls <- data$url # defining url values to put in next line
+thread_details <- get_thread_content(urls) # expect a long processing time
+  # thread_details gives access to upvotes, which wasn't provided in 'data'.
+
+week12_tbl <- tibble( # create the tibble with upvotes & title
+  post = thread_details$threads$title,
+  upvotes = thread_details$threads$upvotes
+)
+write_csv(week12_tbl, file = "../data/week12tbl.csv")
+```
+
+```{r}
+# Create Corpus
+io_corpus_original <- VCorpus(VectorSource(week12_tbl$titles))
+```
